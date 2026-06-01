@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "buildCommand": null,
+  "devCommand": null,
+  "installCommand": null,
+  "functions": {
+    "api/divinate.js": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    { "source": "/api/divinate", "destination": "/api/divinate.js" }
+  ]
+}

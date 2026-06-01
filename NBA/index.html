@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🏀 NBA 斗地主</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="app.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap');
+    * { font-family: 'Noto Sans SC', sans-serif; }
+    body { overflow-x: hidden; }
+    /* Court line pattern */
+    .court-bg {
+      background: 
+        linear-gradient(135deg, #1a5c2a 0%, #2d8a4e 40%, #1a5c2a 100%);
+      position: relative;
+    }
+    .court-bg::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(255,255,255,0.03) 80px, rgba(255,255,255,0.03) 81px),
+        repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(255,255,255,0.03) 80px, rgba(255,255,255,0.03) 81px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .court-bg > * { position: relative; z-index: 1; }
+    /* Card glow */
+    .card-glow {
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+    .card-glow:hover {
+      transform: translateY(-12px) scale(1.05);
+      box-shadow: 0 12px 40px rgba(255,215,0,0.4), 0 0 30px rgba(255,215,0,0.2);
+    }
+    /* Selected card style */
+    .card-selected {
+      transform: translateY(-24px) scale(1.06) !important;
+      box-shadow: 0 0 0 3px #3b82f6, 0 0 25px rgba(59,130,246,0.6), 0 12px 40px rgba(255,215,0,0.3) !important;
+      border-color: #3b82f6 !important;
+    }
+    /* Player card container - horizontal scroll */
+    .cards-scroll {
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: thin;
+      scrollbar-color: #fbbf24 #1a5c2a;
+    }
+    .cards-scroll::-webkit-scrollbar { height: 8px; }
+    .cards-scroll::-webkit-scrollbar-track { background: #1a5c2a; border-radius: 4px; }
+    .cards-scroll::-webkit-scrollbar-thumb { background: #fbbf24; border-radius: 4px; }
+    /* Star glow for high value cards */
+    .star-glow { box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+    /* AI card back */
+    .card-back {
+      background: linear-gradient(145deg, #1e3a5f, #2d5a8e);
+      border: 2px solid #fbbf24;
+    }
+    /* Play area card - base (no animation until JS adds class) */
+    .play-card {
+      transition: all 0.3s ease;
+    }
+    /* ============================
+       EFFECT 1: Slam animation (zoom + slam onto table)
+       ============================ */
+    .play-slam {
+      animation: slamToCenter 0.5s cubic-bezier(0.22, 1.5, 0.44, 1) forwards;
+    }
+    @keyframes slamToCenter {
+      0% { 
+        opacity: 0; 
+        transform: scale(0.15) translateY(-80px) rotate(-8deg); 
+      }
+      35% { 
+        opacity: 1; 
+        transform: scale(1.3) translateY(12px) rotate(3deg); 
+      }
+      55% { 
+        transform: scale(0.8) translateY(-5px) rotate(-2deg); 
+      }
+      75% { 
+        transform: scale(1.1) translateY(3px) rotate(1deg); 
+      }
+      100% { 
+        opacity: 1; 
+        transform: scale(1) translateY(0) rotate(0deg); 
+      }
+    }
+    /* Screen shake effect */
+    @keyframes screenShake {
+      0% { transform: translate(0, 0); }
+      10% { transform: translate(-5px, 3px); }
+      20% { transform: translate(5px, -3px); }
+      30% { transform: translate(-4px, 5px); }
+      40% { transform: translate(4px, -4px); }
+      50% { transform: translate(-5px, 2px); }
+      60% { transform: translate(3px, -5px); }
+      70% { transform: translate(-2px, 4px); }
+      80% { transform: translate(5px, -2px); }
+      90% { transform: translate(-4px, 1px); }
+      100% { transform: translate(0, 0); }
+    }
+    .screen-shake {
+      animation: screenShake 0.4s ease-out;
+    }
+    /* ============================
+       EFFECT 2: Deal animation - cards fly from center
+       ============================ */
+    @keyframes dealCard {
+      0% { 
+        opacity: 0; 
+        transform: scale(0.15) translateY(-50vh) translateX(-30px) rotate(-10deg); 
+      }
+      50% { 
+        opacity: 1; 
+        transform: scale(1.2) translateY(10px) translateX(5px) rotate(3deg); 
+      }
+      70% { 
+        transform: scale(0.9) translateY(-4px) translateX(-2px) rotate(-1deg); 
+      }
+      100% { 
+        opacity: 1; 
+        transform: scale(1) translateY(0) translateX(0) rotate(0deg); 
+      }
+    }
+    .deal-anim { 
+      animation: dealCard 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; 
+    }
+    /* AI deal animation (flies from center upward to AI positions) */
+    @keyframes dealCardAI {
+      0% { 
+        opacity: 0; 
+        transform: scale(0.15) translateY(50vh) translateX(20px) rotate(10deg); 
+      }
+      50% { 
+        opacity: 1; 
+        transform: scale(1.2) translateY(-10px) translateX(-3px) rotate(-2deg); 
+      }
+      70% { 
+        transform: scale(0.9) translateY(4px) translateX(2px) rotate(1deg); 
+      }
+      100% { 
+        opacity: 1; 
+        transform: scale(1) translateY(0) translateX(0) rotate(0deg); 
+      }
+    }
+    .deal-anim-ai { 
+      animation: dealCardAI 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; 
+    }
+    /* Shuffle animation */
+    @keyframes shuffle {
+      0% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(3deg) scale(1.02); }
+      50% { transform: rotate(-3deg) scale(1.02); }
+      75% { transform: rotate(2deg) scale(1.01); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+    .shuffling { animation: shuffle 0.3s ease-in-out 6; }
+    /* Card flip */
+    @keyframes flipIn {
+      0% { transform: rotateY(180deg) scale(0.3); opacity: 0; }
+      100% { transform: rotateY(0deg) scale(1); opacity: 1; }
+    }
+    .flip-in { animation: flipIn 0.6s ease-out forwards; }
+    /* Toast message */
+    .toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 999;
+      animation: toastAnim 1.5s ease-out forwards;
+      pointer-events: none;
+    }
+    @keyframes toastAnim {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+      30% { transform: translate(-50%, -50%) scale(1); }
+      80% { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, -80%) scale(0.8); }
+    }
+    /* Battle animation */
+    @keyframes battleIn {
+      0% { opacity: 0; transform: scale(0.3) rotateY(180deg); }
+      50% { transform: scale(1.1) rotateY(0deg); }
+      100% { opacity: 1; transform: scale(1) rotateY(0deg); }
+    }
+    @keyframes battlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    @keyframes battleSlideLeft {
+      0% { opacity: 0; transform: translateX(-100px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes battleSlideRight {
+      0% { opacity: 0; transform: translateX(100px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes battleFlash {
+      0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+      50% { box-shadow: 0 0 60px rgba(255,215,0,0.8), 0 0 120px rgba(255,100,0,0.4); }
+    }
+    .battle-container {
+      animation: battleIn 0.6s ease-out forwards;
+    }
+    .battle-card-left {
+      animation: battleSlideLeft 0.5s ease-out forwards;
+    }
+    .battle-card-right {
+      animation: battleSlideRight 0.5s ease-out forwards;
+    }
+    .battle-vs {
+      animation: battlePulse 1s ease-in-out infinite;
+    }
+    .battle-result-text {
+      animation: battleFlash 1.5s ease-in-out infinite;
+    }
+    /* ============================
+       EFFECT 3: Bomb effects
+       ============================ */
+    /* Red flash overlay for bomb */
+    @keyframes bombFlash {
+      0% { opacity: 0; }
+      12% { opacity: 0.4; background: #ff0000; }
+      25% { opacity: 0.25; }
+      40% { opacity: 0.1; }
+      60% { opacity: 0.05; }
+      100% { opacity: 0; }
+    }
+    .bomb-flash {
+      position: fixed;
+      inset: 0;
+      background: #cc0000;
+      z-index: 8000;
+      pointer-events: none;
+      animation: bombFlash 0.9s ease-out forwards;
+    }
+    /* Big bomb text: "巨星大抱团！" */
+    @keyframes bombTextZoom {
+      0% { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(0.15) rotate(-20deg); 
+      }
+      30% { 
+        opacity: 1; 
+        transform: translate(-50%, -50%) scale(1.5) rotate(6deg); 
+      }
+      50% { 
+        transform: translate(-50%, -50%) scale(0.85) rotate(-3deg); 
+      }
+      70% { 
+        transform: translate(-50%, -50%) scale(1.15) rotate(2deg); 
+      }
+      100% { 
+        opacity: 1; 
+        transform: translate(-50%, -50%) scale(1) rotate(0deg); 
+      }
+    }
+    @keyframes bombTextPulse {
+      0%, 100% { 
+        text-shadow: 
+          0 0 20px rgba(255, 50, 50, 0.8), 
+          0 0 40px rgba(255, 50, 50, 0.5), 
+          0 0 60px rgba(255, 200, 0, 0.3); 
+      }
+      50% { 
+        text-shadow: 
+          0 0 40px rgba(255, 50, 50, 1), 
+          0 0 80px rgba(255, 50, 50, 0.7), 
+          0 0 120px rgba(255, 200, 0, 0.5), 
+          0 0 160px rgba(255, 100, 0, 0.3); 
+      }
+    }
+    .bomb-text {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9000;
+      pointer-events: none;
+      animation: bombTextZoom 0.8s cubic-bezier(0.22, 1.5, 0.44, 1) forwards;
+    }
+    .bomb-text span {
+      display: inline-block;
+      font-size: 4.5rem;
+      font-weight: 900;
+      color: #ff2222;
+      -webkit-text-stroke: 3px #ffdd00;
+      text-stroke: 3px #ffdd00;
+      animation: bombTextPulse 0.6s ease-in-out infinite;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+    @media (max-width: 640px) {
+      .bomb-text span { 
+        font-size: 2.5rem; 
+        -webkit-text-stroke: 2px #ffdd00; 
+      }
+    }
+    /* Scoreboard modal */
+    .modal-overlay {
+      animation: fadeIn 0.3s ease-out;
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    @keyframes modalSlideUp {
+      0% { opacity: 0; transform: translateY(50px) scale(0.9); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-content {
+      animation: modalSlideUp 0.4s ease-out forwards;
+    }
+    @keyframes trophyBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .trophy-bounce {
+      animation: trophyBounce 1s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="court-bg min-h-screen flex flex-col">
+
+  <!-- End Game Scoreboard Modal -->
+  <div id="endgame-modal" class="modal-overlay fixed inset-0 z-[9999] flex items-center justify-center hidden bg-black/70 backdrop-blur-sm">
+    <div class="modal-content bg-gradient-to-b from-gray-900 to-gray-800 rounded-3xl p-8 border-2 border-yellow-400/50 shadow-2xl max-w-md w-full mx-4">
+      <!-- Trophy -->
+      <div class="text-center mb-4">
+        <span class="trophy-bounce text-7xl block">🏆</span>
+      </div>
+      <!-- Title -->
+      <h2 class="text-3xl font-black text-center text-yellow-400 drop-shadow-lg mb-2">
+        ⛹️ 游戏结束
+      </h2>
+      <!-- Winner -->
+      <div id="winner-text" class="text-center text-2xl font-bold text-white mb-6 bg-black/20 rounded-xl p-3 border border-yellow-400/20">
+      </div>
+      <!-- Scoreboard -->
+      <div id="scoreboard-content" class="space-y-3">
+      </div>
+      <!-- Restart button -->
+      <button id="restart-btn" 
+              class="w-full mt-6 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-500 
+                     hover:from-yellow-300 hover:via-orange-300 hover:to-red-400
+                     text-black font-black text-lg px-8 py-3 rounded-2xl 
+                     shadow-[0_4px_20px_rgba(255,200,0,0.3)]
+                     hover:shadow-[0_8px_30px_rgba(255,200,0,0.5)]
+                     active:scale-95 transition-all duration-200
+                     border border-yellow-300/50 tracking-wider">
+        🔄 再来一局
+      </button>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="text-center py-4 border-b-2 border-yellow-400/30 bg-black/20 backdrop-blur-sm">
+    <h1 class="text-3xl font-black text-yellow-400 drop-shadow-lg tracking-wider">
+      🏀 NBA 斗地主 · 巨星对战
+    </h1>
+    <p class="text-yellow-200/70 text-sm mt-1">54位传奇巨星等你来战！</p>
+  </header>
+
+  <main class="flex-1 flex flex-col px-4 pb-4 gap-3 overflow-hidden">
+
+    <!-- AI Landlord Area -->
+    <section id="ai-landlord-area" class="flex flex-col items-center pt-3">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="bg-red-600 text-white text-xs font-bold px-3 py-0.5 rounded-full shadow">地主</span>
+        <span id="ai-landlord-name" class="text-white font-bold text-lg drop-shadow">AI 地主</span>
+        <span id="ai-landlord-count" class="bg-black/40 text-yellow-300 text-xs px-2 py-0.5 rounded-full">0 张</span>
+      </div>
+      <div id="ai-landlord-cards" class="flex justify-center gap-0.5 flex-wrap max-w-2xl">
+        <!-- AI landlord's card backs -->
+      </div>
+      <!-- AI Landlord play area -->
+      <div id="ai-landlord-play" class="flex justify-center gap-1 min-h-[60px] mt-1"></div>
+    </section>
+
+    <!-- AI Farmer Area -->
+    <section id="ai-farmer-area" class="flex flex-col items-center pt-2">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="bg-green-600 text-white text-xs font-bold px-3 py-0.5 rounded-full shadow">农民</span>
+        <span id="ai-farmer-name" class="text-white font-bold text-lg drop-shadow">AI 农民</span>
+        <span id="ai-farmer-count" class="bg-black/40 text-yellow-300 text-xs px-2 py-0.5 rounded-full">0 张</span>
+      </div>
+      <div id="ai-farmer-cards" class="flex justify-center gap-0.5 flex-wrap max-w-2xl">
+        <!-- AI farmer's card backs -->
+      </div>
+      <!-- AI Farmer play area -->
+      <div id="ai-farmer-play" class="flex justify-center gap-1 min-h-[60px] mt-1"></div>
+    </section>
+
+    <!-- Center status area -->
+    <section class="flex-1 flex flex-col items-center justify-center gap-2 min-h-0">
+      <!-- Game Status -->
+      <div id="game-status" class="text-center">
+        <p id="status-text" class="text-white/80 text-lg drop-shadow">
+          🏀 点击下方按钮，开始比赛！
+        </p>
+      </div>
+
+      <!-- Play Area (center court - shows player's played cards) -->
+      <div id="play-area" class="flex items-center justify-center gap-2 min-h-[110px] w-full px-4">
+        <!-- Cards played on court appear here -->
+      </div>
+
+      <!-- Player Action Buttons -->
+      <div id="action-buttons" class="flex gap-4 items-center hidden">
+        <button id="play-btn" 
+                class="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-400 hover:to-blue-600
+                       text-white font-bold text-lg px-8 py-2.5 rounded-xl 
+                       shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200
+                       border border-blue-300/30 disabled:opacity-40 disabled:cursor-not-allowed">
+          🃏 出牌
+        </button>
+        <button id="pass-btn" 
+                class="bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-400 hover:to-gray-600
+                       text-white font-bold text-lg px-8 py-2.5 rounded-xl 
+                       shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200
+                       border border-gray-300/30 disabled:opacity-40 disabled:cursor-not-allowed">
+          🙅 不要（过）
+        </button>
+      </div>
+
+      <!-- Start / Shuffle Button -->
+      <button id="start-btn" 
+              class="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-500 
+                     hover:from-yellow-300 hover:via-orange-300 hover:to-red-400
+                     text-black font-black text-xl px-10 py-4 rounded-2xl 
+                     shadow-[0_8px_30px_rgba(255,200,0,0.4)] 
+                     hover:shadow-[0_12px_40px_rgba(255,200,0,0.6)]
+                     active:scale-95 transition-all duration-200
+                     border-2 border-yellow-300/50 tracking-wider">
+        ⏩ 开始游戏 · 洗牌发牌
+      </button>
+    </section>
+
+    <!-- Player Area (bottom) -->
+    <section id="player-area" class="bg-black/20 backdrop-blur-sm rounded-2xl p-3 border border-yellow-400/20 
+                                       shadow-[0_-4px_30px_rgba(0,0,0,0.4)]">
+      <div class="flex items-center justify-between mb-2 px-2">
+        <div class="flex items-center gap-2">
+          <span class="bg-blue-600 text-white text-xs font-bold px-3 py-0.5 rounded-full shadow">你</span>
+          <span id="player-name" class="text-white font-bold text-lg drop-shadow">玩家</span>
+        </div>
+        <span id="player-count" class="bg-black/40 text-yellow-300 text-xs px-2 py-0.5 rounded-full">0 张</span>
+      </div>
+      <div id="player-cards" class="cards-scroll flex gap-3 pb-4 px-2 min-h-[180px] items-end">
+        <!-- Player's star cards rendered here -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-2 text-yellow-200/40 text-xs border-t border-yellow-400/20 bg-black/10">
+    数据基于球员生涯场均 · 54张传奇球星卡
+  </footer>
+
+</body>
+</html>

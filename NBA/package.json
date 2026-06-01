@@ -1,0 +1,19 @@
+{
+  "name": "nba-fight-the-landlord",
+  "version": "1.0.0",
+  "description": "NBA 斗地主 - 54位传奇巨星球星卡对战游戏",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "server": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}

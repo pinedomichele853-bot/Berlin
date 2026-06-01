@@ -1,0 +1,13 @@
+{
+  "name": "cyber-divination",
+  "version": "1.0.0",
+  "description": "赛博天机阁 · Cyber Divination Engine - 融合传统术数与AI大模型的命理推演系统",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vercel": "^37.0.0"
+  }
+}

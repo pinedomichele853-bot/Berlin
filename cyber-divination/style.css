@@ -1,0 +1,335 @@
+/* ============================================
+   赛博天机阁 · Cyber Divination Engine
+   Style Sheet - Mystical Cyberpunk Aesthetic
+   ============================================ */
+
+/* --- Tailwind Custom Colors --- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+
+:root {
+    --cyber-dark: #0a0a0f;
+    --cyber-gold: #d4a843;
+    --cyber-gold-light: #f0d080;
+    --cyber-purple: #7c3aed;
+    --cyber-purple-dark: #4c1d95;
+    --cyber-blue: #3b82f6;
+    --cyber-red: #ef4444;
+    --cyber-green: #22c55e;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Noto Serif SC', sans-serif;
+    background: var(--cyber-dark);
+    color: #e5e7eb;
+    overflow-x: hidden;
+}
+
+.bg-cyber-dark { background: var(--cyber-dark); }
+.text-cyber-gold { color: var(--cyber-gold); }
+.border-cyber-gold { border-color: var(--cyber-gold); }
+.bg-cyber-gold { background: var(--cyber-gold); }
+.from-cyber-gold { --tw-gradient-from: var(--cyber-gold); }
+.to-cyber-purple { --tw-gradient-to: var(--cyber-purple); }
+.shadow-cyber-purple { --tw-shadow-color: var(--cyber-purple); }
+.text-cyber-purple { color: var(--cyber-purple); }
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--cyber-dark);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--cyber-gold);
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--cyber-gold-light);
+}
+
+/* --- Loading Animation --- */
+.mystic-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+}
+
+.mystic-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    border: 2px solid transparent;
+    border-top-color: var(--cyber-gold);
+    border-bottom-color: var(--cyber-purple);
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+}
+
+.mystic-ring-2 {
+    width: 100px;
+    height: 100px;
+    border-top-color: var(--cyber-blue);
+    border-bottom-color: var(--cyber-red);
+    animation: spin 1.5s linear infinite reverse;
+}
+
+.mystic-ring-3 {
+    width: 140px;
+    height: 140px;
+    border-top-color: var(--cyber-green);
+    border-bottom-color: var(--cyber-gold);
+    animation: spin 2.5s linear infinite;
+    opacity: 0.5;
+}
+
+.mystic-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse-core 2s ease-in-out infinite;
+}
+
+@keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes pulse-core {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+}
+
+/* Loading Steps */
+.loading-step {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.loading-step.active {
+    opacity: 1 !important;
+    transform: translateY(0);
+}
+
+/* --- Mystic Glow Effect --- */
+.mystic-glow {
+    animation: mystic-glow 3s ease-in-out infinite;
+}
+
+@keyframes mystic-glow {
+    0%, 100% { box-shadow: 0 0 5px var(--cyber-gold), 0 0 10px var(--cyber-gold), 0 0 20px var(--cyber-purple); }
+    50% { box-shadow: 0 0 10px var(--cyber-gold), 0 0 20px var(--cyber-gold), 0 0 40px var(--cyber-purple); }
+}
+
+/* --- Result Tabs --- */
+.result-tab {
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: #9ca3af;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.result-tab:hover {
+    color: var(--cyber-gold);
+    border-color: rgba(212, 168, 67, 0.3);
+    background: rgba(212, 168, 67, 0.05);
+}
+
+.result-tab.active {
+    color: var(--cyber-gold);
+    border-color: var(--cyber-gold);
+    background: rgba(212, 168, 67, 0.1);
+    box-shadow: 0 0 10px rgba(212, 168, 67, 0.2);
+}
+
+.result-panel {
+    display: none;
+    animation: fadeSlideIn 0.5s ease;
+}
+
+.result-panel.active {
+    display: block;
+}
+
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- BaZi Display Grid --- */
+.bazi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+
+.bazi-grid-header {
+    text-align: center;
+    color: var(--cyber-gold);
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid rgba(212, 168, 67, 0.2);
+}
+
+.bazi-cell {
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: rgba(212, 168, 67, 0.05);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(212, 168, 67, 0.1);
+    transition: all 0.3s ease;
+}
+
+.bazi-cell:hover {
+    background: rgba(212, 168, 67, 0.1);
+    border-color: rgba(212, 168, 67, 0.3);
+    transform: scale(1.05);
+}
+
+.bazi-sub {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 400;
+    margin-top: 0.25rem;
+}
+
+/* --- Five Elements Display --- */
+.element-bar {
+    height: 8px;
+    border-radius: 4px;
+    transition: width 1s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.element-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    from { left: -100%; }
+    to { left: 100%; }
+}
+
+/* Element Colors */
+.element-wood { background: linear-gradient(90deg, #22c55e, #16a34a); }
+.element-fire { background: linear-gradient(90deg, #ef4444, #dc2626); }
+.element-earth { background: linear-gradient(90deg, #eab308, #ca8a04); }
+.element-metal { background: linear-gradient(90deg, #e5e7eb, #9ca3af); }
+.element-water { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+
+/* --- Typing Animation --- */
+.typing-text {
+    overflow: hidden;
+    border-right: 2px solid var(--cyber-gold);
+    white-space: pre-wrap;
+    animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from { max-height: 0; }
+    to { max-height: 1000px; }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: var(--cyber-gold); }
+}
+
+/* --- Mystic Card (for sharing) --- */
+.mystic-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.mystic-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        transparent,
+        rgba(212, 168, 67, 0.1),
+        transparent,
+        rgba(124, 58, 237, 0.1),
+        transparent
+    );
+    animation: rotate-gradient 6s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes rotate-gradient {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.mystic-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* --- Particle Background Effect --- */
+#particleCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.3;
+}
+
+/* --- Responsive Tweaks --- */
+@media (max-width: 640px) {
+    .bazi-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.25rem;
+    }
+    .bazi-cell {
+        font-size: 1.1rem;
+        padding: 0.5rem 0.25rem;
+    }
+    .result-tab {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+}

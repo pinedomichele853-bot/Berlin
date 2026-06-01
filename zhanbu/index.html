@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>勃林大师 · 综合术数大观</title>
+<script src="https://cdn.tailwindcss.com">
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Ma+Shan+Zheng&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Serif SC', 'SimSun', 'STSong', serif;
+  background: #1a1a1a;
+  min-height: 100vh;
+  color: #d4c5a0;
+}
+
+/* 水墨背景 */
+.ink-bg {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2520 30%, #1f1b16 60%, #0d0d0d 100%);
+  position: relative;
+}
+
+.ink-bg::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse at 10% 20%, rgba(180, 60, 30, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(100, 100, 100, 0.03) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 卷轴纹理 */
+.scroll-texture {
+  position: relative;
+}
+
+.scroll-texture::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4c5a0' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 容器层级 */
+.content-layer {
+  position: relative;
+  z-index: 1;
+}
+
+/* 古风边框 */
+.ancient-border {
+  border: 2px solid transparent;
+  border-image: linear-gradient(135deg, #8b0000, #d4af37, #8b0000) 1;
+  box-shadow: 0 0 30px rgba(139, 0, 0, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.ancient-border-light {
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.05), inset 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 朱砂红 */
+.cinnabar {
+  color: #c43a31;
+}
+
+.cinnabar-bg {
+  background: linear-gradient(135deg, #8b0000, #c43a31, #a52a2a);
+}
+
+.cinnabar-border {
+  border-color: #c43a31;
+}
+
+/* 古金 */
+.gold {
+  color: #d4af37;
+}
+
+.gold-bg {
+  background: linear-gradient(135deg, #b8961a, #d4af37, #8b6914);
+}
+
+/* 墨色 */
+.ink-dark {
+  background: rgba(20, 18, 15, 0.95);
+}
+
+.ink-medium {
+  background: rgba(30, 27, 22, 0.9);
+}
+
+.ink-light {
+  background: rgba(45, 40, 33, 0.8);
+}
+
+/* 毛笔字标题 */
+.calligraphy {
+  font-family: 'Ma Shan Zheng', cursive;
+  letter-spacing: 0.15em;
+}
+
+/* 印章效果 */
+.seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border: 2px solid #c43a31;
+  color: #c43a31;
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.25rem;
+  transform: rotate(-5deg);
+  position: relative;
+}
+
+.seal::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px; right: 3px; bottom: 3px;
+  border: 1px solid rgba(196, 58, 49, 0.4);
+}
+
+/* 加载动画 */
+.loading-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d4af37;
+  margin: 0 4px;
+  animation: dotPulse 1.4s infinite ease-in-out both;
+}
+
+.loading-dot:nth-child(1) { animation-delay: -0.32s; }
+.loading-dot:nth-child(2) { animation-delay: -0.16s; }
+.loading-dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes dotPulse {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* 淡入动画 */
+.fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 水墨涟漪 */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 0; height: 0;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.1);
+  transform: translate(-50%, -50%);
+  animation: rippleExpand 1.5s ease-out infinite;
+}
+
+@keyframes rippleExpand {
+  0% { width: 0; height: 0; opacity: 0.6; }
+  100% { width: 300px; height: 300px; opacity: 0; }
+}
+
+/* 按钮悬停 */
+.btn-ancient {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.btn-ancient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(139, 0, 0, 0.4);
+}
+
+.btn-ancient:active {
+  transform: translateY(0);
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8b0000;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c43a31;
+}
+
+/* 字段分隔装饰 */
+.divider-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #d4af37;
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+
+.divider-ornament::before,
+.divider-ornament::after {
+  content: '━━━';
+  letter-spacing: -2px;
+}
+
+/* 输入框古风 */
+.input-ancient {
+  background: rgba(30, 27, 22, 0.8);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: #d4c5a0;
+  transition: all 0.3s ease;
+}
+
+.input-ancient:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+  outline: none;
+  background: rgba(40, 36, 30, 0.9);
+}
+
+.input-ancient::placeholder {
+  color: rgba(212, 197, 160, 0.4);
+}
+
+/* radio 定制 */
+.radio-group label {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.radio-group input[type="radio"]:checked + span {
+  background: linear-gradient(135deg, #8b0000, #a52a2a);
+  border-color: #d4af37;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(139, 0, 0, 0.3);
+}
+
+/* 提示弹窗 */
+.toast-ancient {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: rgba(20, 18, 15, 0.98);
+  border: 2px solid #c43a31;
+  box-shadow: 0 0 60px rgba(196, 58, 49, 0.2);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s ease;
+  max-width: 420px;
+  width: 90%;
+}
+
+.toast-ancient.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.toast-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.toast-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* 加载页 */
+.loading-screen {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10, 8, 6, 0.97);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.loading-screen.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* 结果区 */
+.result-section {
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-left: 3px solid #8b0000;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: rgba(25, 22, 18, 0.6);
+  transition: all 0.3s ease;
+}
+
+.result-section:hover {
+  border-color: rgba(212, 175, 55, 0.3);
+  background: rgba(30, 27, 22, 0.8);
+}
+
+.result-section h3 {
+  color: #d4af37;
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+/* 生肖图标 */
+.zodiac-icon {
+  font-size: 2rem;
+  display: inline-block;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+  .container-custom {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .calligraphy-title {
+    font-size: 1.8rem !important;
+  }
+  .result-section {
+    padding: 1rem;
+  }
+}
+</style>
+</head>
+<body class="ink-bg scroll-texture">
+
+<!-- 遮罩层 -->
+<div id="toastOverlay" class="toast-overlay"></div>
+
+<!-- 古风提示弹窗 -->
+<div id="toastModal" class="toast-ancient rounded-lg p-8 text-center">
+  <div class="text-3xl mb-4">⚠</div>
+  <div id="toastMessage" class="text-[#d4c5a0] text-lg mb-6 leading-relaxed"></div>
+  <button onclick="closeToast()" class="btn-ancient cinnabar-bg text-white px-8 py-2 rounded tracking-wider text-sm hover:opacity-90 transition">
+    已知晓
+  </button>
+</div>
+
+<!-- 加载动画页面 -->
+<div id="loadingScreen" class="loading-screen">
+  <div class="text-center content-layer">
+    <!-- 旋转八卦 -->
+    <div class="w-20 h-20 mx-auto mb-8 relative">
+      <div class="absolute inset-0 rounded-full border-4 border-[#d4af37] border-t-[#8b0000] animate-spin" style="animation-duration: 2s;"></div>
+      <div class="absolute inset-2 rounded-full border-2 border-[#d4af37] border-b-[#8b0000] animate-spin" style="animation-duration: 3s; animation-direction: reverse;"></div>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <span class="text-[#d4af37] text-lg font-bold">☯</span>
+      </div>
+    </div>
+
+    <div id="loadingText" class="text-[#d4c5a0] text-xl mb-6 calligraphy tracking-widest">
+      正在排盘...
+    </div>
+
+    <div class="flex justify-center gap-2 mt-4">
+      <span class="loading-dot"></span>
+      <span class="loading-dot"></span>
+      <span class="loading-dot"></span>
+    </div>
+
+    <div class="mt-8 text-[#d4af37] text-opacity-50 text-sm italic">
+      · 天机不可泄露 ·
+    </div>
+  </div>
+</div>
+
+<!-- 主容器 -->
+<div class="content-layer min-h-screen container-custom" style="max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem;">
+
+  <!-- 页眉 -->
+  <header class="text-center mb-10 fade-in">
+    <div class="flex items-center justify-center gap-4 mb-4">
+      <div class="seal text-sm">勃<br>林</div>
+      <h1 class="calligraphy text-4xl md:text-5xl gold tracking-widest" style="font-family: 'Ma Shan Zheng', cursive;">
+        勃林大师
+      </h1>
+      <div class="seal text-sm">算<br>命</div>
+    </div>
+    <p class="text-[#d4c5a0] text-opacity-60 text-sm tracking-widest mt-2">—— 勃林大师帮算命 · 八字 · 紫微 · 奇门 ——</p>
+    <div class="divider-ornament mt-4"></div>
+  </header>
+
+  <!-- 输入区 -->
+  <section id="inputSection" class="ancient-border-light rounded-lg p-6 md:p-8 ink-medium fade-in" style="animation-delay: 0.2s;">
+    <h2 class="calligraphy text-2xl gold text-center mb-6 tracking-wider">· 请录命主信息 ·</h2>
+
+    <form id="divinationForm" class="space-y-5" onsubmit="return false;">
+
+      <!-- 姓名 -->
+      <div>
+        <label class="block text-[#d4c5a0] text-sm mb-2 tracking-wider">
+          <span class="cinnabar">●</span> 尊姓大名
+        </label>
+        <input type="text" id="userName" placeholder="请输入姓名..." class="input-ancient w-full px-4 py-3 rounded tracking-wider text-base" maxlength="20">
+      </div>
+
+      <!-- 性别 -->
+      <div class="radio-group">
+        <label class="block text-[#d4c5a0] text-sm mb-2 tracking-wider">
+          <span class="cinnabar">●</span> 性别命格
+        </label>
+        <div class="flex gap-4">
+          <label class="flex-1">
+            <input type="radio" name="gender" value="乾造" class="hidden">
+            <span class="block text-center px-4 py-3 rounded border border-[#d4af37] border-opacity-20 bg-[rgba(30,27,22,0.6)] text-[#d4c5a0] transition text-sm tracking-wider">
+              ☰ 乾造 · 男
+            </span>
+          </label>
+          <label class="flex-1">
+            <input type="radio" name="gender" value="坤造" class="hidden">
+            <span class="block text-center px-4 py-3 rounded border border-[#d4af37] border-opacity-20 bg-[rgba(30,27,22,0.6)] text-[#d4c5a0] transition text-sm tracking-wider">
+              ☷ 坤造 · 女
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 出生日期 -->
+      <div>
+        <label class="block text-[#d4c5a0] text-sm mb-2 tracking-wider">
+          <span class="cinnabar">●</span> 出生年月日时
+        </label>
+        <input type="datetime-local" id="birthDate" class="input-ancient w-full px-4 py-3 rounded tracking-wider text-base" value="1990-01-01T12:00">
+      </div>
+
+      <!-- 按钮 -->
+      <div class="pt-4 text-center">
+        <button id="divineBtn" class="btn-ancient cinnabar-bg text-white px-12 py-4 rounded-lg text-lg tracking-widest calligraphy shadow-lg flex items-center justify-center gap-3 mx-auto">
+          <span>☰</span>
+          <span>开 启 命 盘</span>
+          <span>☷</span>
+        </button>
+        <p class="text-[#d4c5a0] text-opacity-40 text-xs mt-3 tracking-wider">· 心诚则灵 · 一占则明 ·</p>
+      </div>
+
+    </form>
+  </section>
+
+  <!-- 结果区 -->
+  <section id="resultSection" class="mt-8 hidden">
+    <div class="text-center mb-6 fade-in">
+      <div class="divider-ornament mb-4"></div>
+      <h2 class="calligraphy text-3xl gold tracking-wider">· 命 盘 总 览 ·</h2>
+      <div class="divider-ornament mt-4"></div>
+    </div>
+
+    <div id="resultContent" class="space-y-2">
+      <!-- 动态插入结果 -->
+    </div>
+
+    <div class="text-center mt-8 fade-in">
+      <button onclick="resetForm()" class="btn-ancient border border-[#d4af37] border-opacity-30 text-[#d4c5a0] px-8 py-3 rounded tracking-wider text-sm hover:bg-[rgba(212,175,55,0.1)] transition">
+        ← 重新起卦
+      </button>
+      <p class="text-[#d4c5a0] text-opacity-30 text-xs mt-4 tracking-wider">· 命理之说 · 仅供参考 · 修心为上 ·</p>
+    </div>
+  </section>
+
+  <!-- 底部 -->
+  <footer class="text-center mt-12 pt-6 border-t border-[#d4af37] border-opacity-10 fade-in">
+    <p class="text-[#d4c5a0] text-opacity-30 text-xs tracking-widest">
+      勃林大师帮算命 · 综合术数大观<br>
+      基于传统术数文化 · 仅供娱乐参考
+    </p>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   天机演演 · 综合术数引擎
+   ============================================================ */
+
+// ====== 工具函数 ======
+
+/** DJB2 Hash —— 生成固定数字种子 */
+function djb2Hash(str) {
+  let hash = 5381;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) + hash) + str.charCodeAt(i);
+    hash = hash & 0xffffffff; // 32-bit
+  }
+  return Math.abs(hash);
+}
+
+/** 线性同余伪随机 (相同种子永远相同结果) */
+function createRNG(seed) {
+  let state = seed;
+  return function() {
+    state = (state * 1664525 + 1013904223) & 0xffffffff;
+    return (state >>> 0) / 0xffffffff;
+  };
+}
+
+/** 从数组中随机取一项 */
+function pick(arr, rand) {
+  return arr[Math.floor(rand() * arr.length)];
+}
+
+/** 从数组中随机取一项并移除 (不重复) */
+function pickAndRemove(arr, rand) {
+  const idx = Math.floor(rand() * arr.length);
+  return arr.splice(idx, 1)[0];
+}
+
+/** 根据种子随机取 n 项 (可重复) */
+function pickN(arr, n, rand) {
+  const result = [];
+  for (let i = 0; i < n; i++) {
+    result.push(pick(arr, rand));
+  }
+  return result;
+}
+
+// ====== 固定语料库 ======
+
+/* ---------- 生肖 ---------- */
+const ZODIAC = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+
+const ZODIAC_YINYANG = {
+  '鼠':'子','牛':'丑','虎':'寅','兔':'卯','龙':'辰','蛇':'巳',
+  '马':'午','羊':'未','猴':'申','鸡':'酉','狗':'戌','猪':'亥'
+};
+
+const ZODIAC_WUXING = {
+  '鼠':'水','牛':'土','虎':'木','兔':'木','龙':'土','蛇':'火',
+  '马':'火','羊':'土','猴':'金','鸡':'金','狗':'土','猪':'水'
+};
+
+const ZODIAC_PERSONALITY = {
+  '鼠':'聪慧机敏，善于筹谋，然多思多虑',
+  '牛':'勤恳踏实，坚韧不拔，然固执己见',
+  '虎':'勇猛果敢，气势磅礴，然易冲动行事',
+  '兔':'温文尔雅，心思细腻，然优柔寡断',
+  '龙':'气宇轩昂，志存高远，然好高骛远',
+  '蛇':'深谋远虑，冷静沉着，然多疑善变',
+  '马':'热情奔放，自由不羁，然缺乏恒心',
+  '羊':'温和善良，艺术天赋，然依赖心强',
+  '猴':'机智灵活，善于交际，然心性不定',
+  '鸡':'精明能干，追求完美，然苛责于人',
+  '狗':'忠诚正直，侠义心肠，然过于敏感',
+  '猪':'豁达大度，福泽深厚，然安于现状'
+};
+
+/* ---------- 天干地支 ---------- */
+const TIAN_GAN = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const DI_ZHI = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+
+/* ---------- 卷首语 · 定场诗 ---------- */
+const OPENING_POEMS = [
+  '「鸿蒙初辟分阴阳，一炁流行化万象。命理如云难捉摸，且将玄机问穹苍。」',
+  '「天地玄黄有定数，日月轮回总不休。人生一世如朝露，福祸相依莫强求。」',
+  '「紫气东来三万里，函关西望五千年。不知命运何处起，且向此中问谪仙。」',
+  '「大梦谁先觉？平生我自知。草堂春睡足，窗外日迟迟。」',
+  '「滚滚长江东逝水，浪花淘尽英雄。是非成败转头空。青山依旧在，几度夕阳红。」',
+  '「天行健，君子以自强不息；地势坤，君子以厚德载物。」',
+  '「一命二运三风水，四积阴德五读书。六名七相八敬神，九交贵人十养生。」',
+  '「清风明月本无价，近水远山皆有情。命中有时终须有，命里无时莫强求。」',
+  '「道可道，非常道；名可名，非常名。无名天地之始，有名万物之母。」',
+  '「玄之又玄，众妙之门。洞悉天机者，必明阴阳消长之理。」'
+];
+
+/* ---------- 卷首概括 ---------- */
+const OVERVIEW_TEMPLATES = [
+  '阁下命格，${gender}之体，生肖属${zodiac}。天地之气交感，五行之数流转，${zodiac}为${zodiacWxing}命，生而有${zodiacChar}。综观全局，命局之中暗藏玄机，上应天星，下合地理，乃非凡之格也。',
+  '今观${name}君之命盘，${gender}之躯，${zodiac}年生人。${zodiacWxing}气充盈，${zodiacChar}。天垂象而地成形，命之理微矣。细推五行生克，察其旺衰休囚，可断其人一生之休咎。',
+  '${name}君，${gender}命，${zodiac}肖。命理之学，首重阴阳。观君之八字格局，${zodiacWxing}为君之本命五行，${zodiacChar}。天机流转，大道至简，今为君推演之。'
+];
+
+/* ---------- 四柱八字与五行解析 ---------- */
+const BAZI_PILLAR_TEMPLATES = [
+  '四柱排定：年柱 ${yearGan}${yearZhi}、月柱 ${monthGan}${monthZhi}、日柱 ${dayGan}${dayZhi}、时柱 ${hourGan}${hourZhi}。日干为${dayGan}，是为命主自身。${dayGan}属${dayWxing}，生于${season}月，其气${seasonQi}。${dayWxing}之为物，${wxingDesc}。观四柱五行分布：木${mu}、火${huo}、土${tu}、金${jin}、水${shui}。',
+  '八字格局，以日干${dayGan}为元男（元女），${dayGan}五行属${dayWxing}，${dayWxing}者，${wxingDesc}。年柱${yearGan}${yearZhi}，祖上根基所在，${yearGan}属${yearWxing}，${yearZhi}藏${zhiWxing}气。月柱${monthGan}${monthZhi}，${season}之气当家，${monthGan}透出${monthWxing}。日柱${dayGan}${dayZhi}，夫妻宫位，${dayZhi}中暗藏${zhiHide}。时柱${hourGan}${hourZhi}，晚景与子女之象。'
+];
+
+const WXING_DESC = {
+  '金': '刚锐肃杀，主决断与变革。金多者刚毅果决，然过刚则易折',
+  '木': '生发条达，主仁爱与成长。木盛者仁慈宽厚，然过旺则固执',
+  '水': '润下就湿，主智慧与变通。水深者聪慧明达，然过泛则漂流',
+  '火': '炎上热烈，主礼仪与文明。火旺者热情磊落，然过烈则焦躁',
+  '土': '稼穑厚重，主诚信与包容。土厚者稳重可靠，然过重则迟钝'
+};
+
+const SEASON_QI = {
+  '春': '木旺火相，生机勃发，宜疏不宜堵',
+  '夏': '火旺土相，炎热升腾，宜静不宜动',
+  '秋': '金旺水相，肃杀收敛，宜收不宜散',
+  '冬': '水旺木相，寒凝闭藏，宜藏不宜露'
+};
+
+const STRENGTH_ANALYSIS = [
+  '综观全局，命局中${strongWxing}气偏旺，${weakWxing}气偏弱。喜用神为${xiGod}，忌神为${jiGod}。${xiGod}者，乃君命中所需补益之气；${jiGod}者，宜避之、化之。若能善用${xiGod}之力，则事业通达，身心康泰。',
+  '五行生克之辨：君命中${strongWxing}过旺，宜以${xiGod}泄之、耗之；${weakWxing}过弱，宜以${xiGod}生之、扶之。大运流转，五行消长，当顺势而为，不可逆天强求。',
+  '推演命局五行强弱：${strongWxing}气盛，${weakWxing}气衰。此消彼长，自然之理也。君宜补${xiGod}之气，避${jiGod}之方。东方甲乙木，南方丙丁火，中央戊己土，西方庚辛金，北方壬癸水，各有所宜。'
+];
+
+const CHARACTER_ANALYSIS = [
+  '性格特质方面：${name}君外在表现为${outward}，然内心深处实为${inward}。${dayGan}日干坐${dayZhi}，${seatDesc}。${zodiac}年生人，${zodiacChar}。综合来看，君之性情，${temperSummary}。',
+  '秉性探微：${name}君天资${talent}，然性情之中亦有${weakness}之弊。${zodiac}肖之人，${zodiacChar}。日柱${dayGan}${dayZhi}一柱，${seatDesc}。若能扬长避短，则大成可期。',
+  '心性解析：君之命格，${dayGan}为元，${zodiac}为象。${zodiac}者${zodiacChar}。${dayGan}坐${dayZhi}，${seatDesc}。内刚外柔，${outward}，内${inward}。此乃天地造化之妙。'
+];
+
+const OUTWARD_TRAITS = ['温文尔雅','刚毅果决','沉稳大气','聪慧机敏','豪爽直率','内敛含蓄','豁达乐观','严谨细致','随和可亲','坚毅执着'];
+const INWARD_TRAITS = ['敏感细腻','坚韧不拔','多思多虑','热情似火','淡泊宁静','志向高远','慈悲为怀','孤傲清高','豁达通透','执着坚定'];
+const TALENT_TRAITS = ['聪颖过人','悟性极佳','才华横溢','胆识过人','长袖善舞','心思缜密','天资聪慧','独具匠心','博闻强识','善于谋略'];
+const WEAKNESS_TRAITS = ['偶有优柔','略嫌急躁','过于理想','稍显固执','未免孤傲','易生疑虑','时有冲动','略欠圆融','不免敏感','略显散漫'];
+const SEAT_DESCS = [
+  '夫妻宫稳固，主中年婚姻和美',
+  '自我意识强烈，个性独立',
+  '贵人运佳，常有意外之助',
+  '才华内敛，不喜张扬',
+  '财星得位，求财较为顺遂',
+  '官星显现，事业有可为之象',
+  '食伤吐秀，聪明才智得以发挥',
+  '印星护身，多得长辈提携',
+  '比肩助力，兄弟朋友可靠',
+  '七杀有制，能化压力为动力'
+];
+const TEMPER_SUMMARIES = [
+  '刚柔并济，知进知退，乃成大器之相。',
+  '外圆内方，通权达变，处世颇具智慧。',
+  '性情中人，重情重义，然需防为情所困。',
+  '沉稳持重，谋定后动，有将帅之风。',
+  '灵动多变，适应力强，然需持之以恒。',
+  '心地纯良，待人真诚，颇有古君子之风。'
+];
+
+/* ---------- 紫微斗数 ---------- */
+const ZIWEI_STARS = ['紫微','天机','太阳','武曲','天同','廉贞','天府','太阴','贪狼','巨门','天相','天梁','七杀','破军'];
+const ZIWEI_STAR_MEANINGS = {
+  '紫微':'帝星入命，威仪自生，领导才能卓越，然易孤高寡合',
+  '天机':'智星守命，聪慧绝伦，善谋略策划，然多思多虑',
+  '太阳':'贵星高照，光明磊落，热心助人，然光芒过露易招妒',
+  '武曲':'财星临命，刚毅果决，求财有力，然性情稍显刚硬',
+  '天同':'福星入宫，随和知足，人缘极佳，然略显懒散安逸',
+  '廉贞':'次桃花星，才华横溢，重情重义，然易为情所困',
+  '天府':'令星在位，稳重保守，守成有余，然开拓不足',
+  '太阴':'月华照命，温柔细腻，才华内敛，然多愁善感',
+  '贪狼':'大桃花星，多才多艺，交际广阔，然欲望较强',
+  '巨门':'暗星守宫，口才出众，以言为业，然易惹是非',
+  '天相':'印星护持，稳重可靠，辅佐之力强，然缺乏主见',
+  '天梁':'荫星佑护，慈祥仁厚，消灾解厄，然略显老气',
+  '七杀':'将星入命，敢作敢为，开创力强，然冲动激烈',
+  '破军':'耗星破旧，勇于变革，不破不立，然动荡不安'
+};
+
+const CAIBO_PALACE = [
+  '财帛宫见${star}，${meaning}。正财运${zhengCai}，偏财运${pianCai}。一生求财宜${caiMethod}，切忌${caiTaboo}。',
+  '财帛宫星曜分布，${star}主财，${meaning}。财源以${caiSource}为佳，投资宜${caiMethod}。${caiAge}岁前后，有重大财运转折。',
+  '观君财帛之宫，${star}坐守，${meaning}。正财稳定，偏财时有时无。${caiMethod}行业最利求财，${caiTaboo}之事切莫为之。'
+];
+
+const GUANLU_PALACE = [
+  '官禄宫${star}临位，${meaning}。事业宜${careerDir}，${careerAge}岁前后当有${careerEvent}。${careerAdvice}。',
+  '事业格局中，官禄宫${star}坐镇，${meaning}。${careerDir}为君之正途，${careerAge}岁前后运势大开，可乘势而起。',
+  '官禄一宫，${star}高照，${meaning}。事业发展宜${careerDir}，忌${careerTaboo}。中年之后，渐入佳境。'
+];
+
+const QIANYI_PALACE = [
+  '迁移宫${star}动，${meaning}。外出发展${migrationLuck}，宜${migrationDir}方为吉。奔波之中有机遇，动静之间见真章。',
+  '迁移之宫，${star}星坐守，${meaning}。远行发展利于${migrationDir}方，${migrationLuck}。水流山转，自有佳期。',
+  '观迁移宫，${star}星照临，${meaning}。君一生宜动中求财，${migrationDir}方向大利。${migrationLuck}，当把握之。'
+];
+
+const ZIWEI_ZHENGCAI = ['稳健可观','渐入佳境','中年旺盛','平顺有馀','晚景丰厚'];
+const ZIWEI_PIANCAI = ['偶有小得','时来运转','投机不宜','偏财暗藏','机缘颇多'];
+const ZIWEI_CAI_METHOD = ['守正出奇','稳中求进','以智取胜','广结善缘','专精一艺','多元化经营'];
+const ZIWEI_CAI_TABOO = ['贪多务得','急功近利','投机冒险','轻信他人','固步自封'];
+const ZIWEI_CAI_SOURCE = ['专业技能','创意策划','商贸流通','文化教育','科技新创','不动产'];
+const ZIWEI_CAI_AGES = ['三十四','三十八','四十二','四十五','四十八','五十二'];
+const CAREER_DIRS = ['文教传媒','科技互联','金融管理','创意设计','医疗健康','法律咨询','自主创业','学术研究','行政管理','文化艺术'];
+const CAREER_EVENTS = ['有重大突破','遇贵人提携','获晋升良机','转行成功','创业顺遂','声名鹊起'];
+const CAREER_ADVICE = ['宜广结善缘，谦逊待人','宜深耕专业，厚积薄发','宜大胆创新，敢为人先','宜稳扎稳打，步步为营','宜寻求合作，借力而行','宜顺势而为，不可强求'];
+const CAREER_TABOO = ['冲动跳槽','频繁转行','盲目扩张','冒进投资','固守陈规'];
+const MIGRATION_LUCK = ['大吉之象，动则有利','中吉，偏安一隅不如远行','先难后易，终有所成','奔波劳碌，然收获颇丰','平稳过渡，小有所得'];
+const MIGRATION_DIRS = ['东南','正南','西南','正东','正北','西北'];
+
+/* ---------- 奇门遁甲 ---------- */
+const NINE_STARS = ['天蓬星','天芮星','天冲星','天辅星','天禽星','天心星','天柱星','天任星','天英星'];
+const NINE_STAR_MEANINGS = {
+  '天蓬星':'水星之精，主黑暗与险阻，然亦有破旧立新之功',
+  '天芮星':'土星之精，主疾病与灾厄，宜静守不宜妄动',
+  '天冲星':'木星之精，主震动与冲击，有先破后立之象',
+  '天辅星':'木星之精，主教化与辅佐，大利文事与教育',
+  '天禽星':'土星之精，主中庸与平和，万事皆宜稳步推进',
+  '天心星':'金星之精，主医疗与谋划，利策划与治疗之事',
+  '天柱星':'金星之精，主毁坏与破败，宜守旧不宜创新',
+  '天任星':'土星之精，主担当与承载，任重道远终有所成',
+  '天英星':'火星之精，主光明与荣耀，利求名不利求财'
+};
+
+const EIGHT_GATES = ['休门','生门','伤门','杜门','景门','死门','惊门','开门'];
+const GATE_MEANINGS = {
+  '休门':'吉门，主休养生息，宜求财、婚嫁',
+  '生门':'大吉之门，主生机勃勃，万事亨通',
+  '伤门':'凶门，主损伤与争斗，宜捕猎不宜出行',
+  '杜门':'平门，主闭塞不通，宜隐逸不宜进取',
+  '景门':'平门，主文章与信息，利考试利策划',
+  '死门':'大凶之门，主绝灭与终结，万事不利',
+  '惊门':'凶门，主惊恐与不安，宜诉讼不宜远行',
+  '开门':'大吉之门，主公开与开创，万事大吉'
+};
+
+const EIGHT_GODS = ['值符','螣蛇','太阴','六合','勾陈','朱雀','九地','九天'];
+const GOD_MEANINGS = {
+  '值符':'八神之首，百恶消散，逢凶化吉',
+  '螣蛇':'虚惊怪异，大事化小，小事化了',
+  '太阴':'暗中行事，宜谋划不宜公开',
+  '六合':'和合之神，主婚姻合作诸事皆宜',
+  '勾陈':'拖延阻滞，宜静不宜动',
+  '朱雀':'口舌是非，宜慎言慎行',
+  '九地':'稳重持久，宜固守不宜出击',
+  '九天':'扬兵九天，宜主动出击'
+};
+
+const QIMEN_ANALYSIS = [
+  '遁甲演局：今得天时${star}临宫，${starM}。八门之中，${gate}为当前之象，${gateM}。八神方面，${god}值事，${godM}。总体而言，${overallQi}。',
+  '奇门推演：九星之中，${star}入局，${starM}。八门流转，${gate}当前，${gateM}。八神以${god}为应，${godM}。综合判断：${overallQi}。',
+  '时局占断：观天时，${star}当令，${starM}。审地利，${gate}方位为要，${gateM}。察人和，${god}护佑，${godM}。是为${overallQi}。'
+];
+
+const QIMEN_OVERALL = [
+  '近期运势吉凶参半，生门所在为${goodDir}方，死门所在为${badDir}方。${goodDir}方位宜主动作为，${badDir}方位宜静守退避。趋吉避凶之道，在于顺势而为，不可逆天强取。',
+  '时运分析：${goodDir}方有生门之气，大利求财谋事；${badDir}方死门闭塞，宜避之为吉。建议君近期多向${goodDir}方出行办事，远离${badDir}方位，则可化险为夷。',
+  '天时地利人和：${goodDir}方向吉星高照，诸事可为；${badDir}方向凶星当道，宜守不宜攻。君子当识时务，顺天应人，方得始终。'
+];
+
+const DIRECTIONS = ['正东','东南','正南','西南','正西','西北','正北','东北'];
+
+/* ---------- 流年大运 ---------- */
+const YEAR_PREDICTIONS = [
+  '未来三年运势展望：\n明年（${y1}年）事业上${y1career}，感情方面${y1love}，健康${y1health}。建议：${y1advice}。\n后年（${y2}年）${y2career}，${y2love}，健康${y2health}。${y2advice}。\n大后年（${y3}年）步入${y3overall}，${y3career}，${y3love}，${y3health}。${y3advice}。',
+  '流年推演：\n${y1}年：${y1overall}之年。事业方面${y1career}，感情${y1love}，健康${y1health}。寄语：${y1advice}。\n${y2}年：${y2overall}。事业${y2career}，感情${y2love}，健康${y2health}。${y2advice}。\n${y3}年：${y3overall}。${y3career}，${y3love}，${y3health}。${y3advice}。'
+];
+
+const YEAR_TYPES = ['潜龙在渊','见龙在田','飞龙在天','亢龙有悔','否极泰来','稳中求进','风起云涌','厚积薄发','起伏波动','柳暗花明'];
+const YEAR_CAREER = [
+  '宜稳扎稳打，不可冒进',
+  '有贵人相助，可乘势而起',
+  '变动之中暗藏机遇',
+  '宜深耕专业，积累实力',
+  '合作生财，广结善缘',
+  '谨防小人，守正为吉',
+  '开拓创新，大有可为',
+  '以退为进，蓄势待发',
+  '名利双收之象',
+  '宜寻求突破，打破僵局'
+];
+const YEAR_LOVE = [
+  '情缘渐浓，好事将近',
+  '宜多沟通，避免误会',
+  '桃花旺盛，然需谨慎选择',
+  '平淡之中见真情',
+  '感情稳定，宜规划未来',
+  '谨防烂桃花干扰',
+  '宜多陪伴，增进感情',
+  '单身者有机会遇到正缘',
+  '已婚者家庭和睦',
+  '情感上需多些包容'
+];
+const YEAR_HEALTH = [
+  '总体良好，注意作息',
+  '需防消化系统问题',
+  '精力充沛，宜适当运动',
+  '注意精神压力，适度放松',
+  '关节方面需多加留意',
+  '健康状况渐入佳境',
+  '需防季节交替时的感恙',
+  '身心康泰，精气神足',
+  '建议定期体检预防',
+  '注意劳逸结合，不可过度透支'
+];
+const YEAR_ADVICE = [
+  '顺势而为，不可强求。多行善事，积累福德。',
+  '把握良机，果断行动。修心养性，静待花开。',
+  '处变不惊，从容应对。以静制动，以柔克刚。',
+  '厚德载物，自强不息。但行好事，莫问前程。',
+  '广结善缘，谦逊待人。吃亏是福，难得糊涂。',
+  '居安思危，未雨绸缪。凡事预则立，不预则废。',
+  '不忘初心，方得始终。锲而不舍，金石可镂。',
+  '知足常乐，随遇而安。淡泊明志，宁静致远。',
+  '天行健，君子以自强不息。地势坤，君子以厚德载物。',
+  '祸兮福之所倚，福兮祸之所伏。塞翁失马，焉知非福。'
+];
+const YEAR_OVERALLS = ['小吉','中平','大吉','平缓','波动','顺遂','多舛','亨通','阻滞','昌盛'];
+
+/* ---------- 大师寄语 ---------- */
+const FINAL_WORDS = [
+  '命理之说，玄之又玄。然天道酬勤，地道酬善。${name}君若能修心养性，积德行善，则命运自可改移。所谓"我命在我不在天"，诚哉斯言。愿君以平常心看待得失，以精进心经营人生。',
+  '八字命盘，不过是一张人生的参考地图。路终究要自己走，福终究要自己修。${name}君，愿你在人生的旅途中，既能仰望星空，又能脚踏实地。心存善念，天必佑之。',
+  '天机不可尽泄，命理不可尽信。${name}君当知，人生最珍贵者，非富贵荣华，而是内心的平安与喜乐。愿君以古圣先贤为镜，修身齐家，不负此生。',
+  '道法自然，天人合一。${name}君之命格，虽有定数，亦有变数。积善之家，必有馀庆。愿君多行善举，广种福田，则命运之轮自然向吉。',
+  '曾经沧海难为水，除却巫山不是云。${name}君，人生起落本是常态，莫因一时得失而忘形或沮丧。守得住寂寞，才看得到繁华。大器晚成者，往往最为贵重。',
+  '一切有为法，如梦幻泡影，如露亦如电，应作如是观。${name}君，看淡得失，放下执念，方能自在。命中有定，运中有变，修心为上，改运次之。',
+  '天地不仁，以万物为刍狗；圣人不仁，以百姓为刍狗。${name}君，世间万物皆在因果之中，种善因得善果，种恶因得恶果。愿君慎独修身，善自为之。'
+];
+
+// ====== 核心运算引擎 ======
+
+function performDivination(name, gender, birthStr) {
+  // 1. 生成固定种子
+  const seedStr = name + gender + birthStr + '勃林大师·玄门正宗';
+  const seed = djb2Hash(seedStr);
+  const rand = createRNG(seed);
+
+  // 2. 计算生肖
+  const date = new Date(birthStr);
+  const year = date.getFullYear();
+  const zodiacIdx = (year - 4) % 12;
+  const zodiac = ZODIAC[zodiacIdx >= 0 ? zodiacIdx : zodiacIdx + 12];
+  const zodiacWxing = ZODIAC_WUXING[zodiac];
+  const zodiacZhi = ZODIAC_YINYANG[zodiac];
+  const zodiacChar = ZODIAC_PERSONALITY[zodiac];
+
+  // 3. 模拟四柱
+  const yearGan = TIAN_GAN[(year - 4) % 10];
+  const yearZhi = DI_ZHI[(year - 4) % 12];
+  const monthGan = TIAN_GAN[Math.floor(rand() * 10)];
+  const monthZhi = DI_ZHI[date.getMonth() % 12];
+  const dayGan = TIAN_GAN[Math.floor(rand() * 10)];
+  const dayZhi = DI_ZHI[Math.floor(rand() * 12)];
+  const hourGan = TIAN_GAN[Math.floor(rand() * 10)];
+  const hourZhi = DI_ZHI[Math.floor(rand() * 12)];
+
+  const dayWxing = getWxing(dayGan);
+  const yearWxing = getWxing(yearGan);
+  const monthWxing = getWxing(monthGan);
+  const zhiWxing = getZhiWxing(dayZhi);
+  const zhiHide = ['甲木','乙木','丙火','丁火','戊土','己土','庚金','辛金','壬水','癸水'][Math.floor(rand() * 10)];
+
+  const month = date.getMonth();
+  let season = '';
+  if (month >= 2 && month <= 4) season = '春';
+  else if (month >= 5 && month <= 7) season = '夏';
+  else if (month >= 8 && month <= 10) season = '秋';
+  else season = '冬';
+  const seasonQi = SEASON_QI[season];
+
+  const wxingDesc = WXING_DESC[dayWxing] || '中和之气，不偏不倚';
+
+  // 五行分布模拟
+  const wxingElements = ['金','木','水','火','土'];
+  const wxingValues = {};
+  let total = 0;
+  wxingElements.forEach(w => {
+    wxingValues[w] = Math.floor(rand() * 40 + 10);
+    total += wxingValues[w];
+  });
+  // 归一化
+  Object.keys(wxingValues).forEach(k => {
+    wxingValues[k] = Math.round(wxingValues[k] / total * 100);
+  });
+
+  // 找最强和最弱
+  let strongWxing = '', weakWxing = '', maxVal = -1, minVal = 999;
+  Object.entries(wxingValues).forEach(([k, v]) => {
+    if (v > maxVal) { maxVal = v; strongWxing = k; }
+    if (v < minVal) { minVal = v; weakWxing = k; }
+  });
+
+  // 喜用神和忌神
+  const wxingCycle = { '木':'火','火':'土','土':'金','金':'水','水':'木' };
+  const wxingCycleKe = { '木':'土','土':'水','水':'火','火':'金','金':'木' };
+  const xiGod = wxingCycle[weakWxing] || '火';
+  const jiGod = wxingCycleKe[strongWxing] || '金';
+
+  // 随机选择
+  const outward = pick(OUTWARD_TRAITS, rand);
+  const inward = pick(INWARD_TRAITS, rand);
+  const talent = pick(TALENT_TRAITS, rand);
+  const weakness = pick(WEAKNESS_TRAITS, rand);
+  const seatDesc = pick(SEAT_DESCS, rand);
+  const temperSummary = pick(TEMPER_SUMMARIES, rand);
+
+  // 紫微
+  const mainStar = pick(ZIWEI_STARS, rand);
+  const starMeaning = ZIWEI_STAR_MEANINGS[mainStar];
+  const zhengCai = pick(ZIWEI_ZHENGCAI, rand);
+  const pianCai = pick(ZIWEI_PIANCAI, rand);
+  const caiMethod = pick(ZIWEI_CAI_METHOD, rand);
+  const caiTaboo = pick(ZIWEI_CAI_TABOO, rand);
+  const caiSource = pick(ZIWEI_CAI_SOURCE, rand);
+  const caiAge = pick(ZIWEI_CAI_AGES, rand);
+
+  const star2 = pick(ZIWEI_STARS.filter(s => s !== mainStar), rand);
+  const meaning2 = ZIWEI_STAR_MEANINGS[star2];
+  const careerDir = pick(CAREER_DIRS, rand);
+  const careerAge = pick(ZIWEI_CAI_AGES, rand);
+  const careerEvent = pick(CAREER_EVENTS, rand);
+  const careerAdvice = pick(CAREER_ADVICE, rand);
+  const careerTaboo = pick(CAREER_TABOO, rand);
+
+  const star3 = pick(ZIWEI_STARS.filter(s => s !== mainStar && s !== star2), rand);
+  const meaning3 = ZIWEI_STAR_MEANINGS[star3];
+  const migrationLuck = pick(MIGRATION_LUCK, rand);
+  const migrationDir = pick(MIGRATION_DIRS, rand);
+
+  // 奇门
+  const qimenStar = pick(NINE_STARS, rand);
+  const starM = NINE_STAR_MEANINGS[qimenStar];
+  const qimenGate = pick(EIGHT_GATES, rand);
+  const gateM = GATE_MEANINGS[qimenGate];
+  const qimenGod = pick(EIGHT_GODS, rand);
+  const godM = GOD_MEANINGS[qimenGod];
+  const goodDir = pick(DIRECTIONS, rand);
+  let badDir = pick(DIRECTIONS, rand);
+  while (badDir === goodDir) badDir = pick(DIRECTIONS, rand);
+  const overallQi = pick(QIMEN_OVERALL, rand);
+  const overallQiFinal = overallQi
+    .replace('${goodDir}', goodDir)
+    .replace('${badDir}', badDir);
+
+  // 流年
+  const y1 = year + 1;
+  const y2 = year + 2;
+  const y3 = year + 3;
+  const y1career = pick(YEAR_CAREER, rand);
+  const y2career = pick(YEAR_CAREER, rand);
+  const y3career = pick(YEAR_CAREER, rand);
+  const y1love = pick(YEAR_LOVE, rand);
+  const y2love = pick(YEAR_LOVE, rand);
+  const y3love = pick(YEAR_LOVE, rand);
+  const y1health = pick(YEAR_HEALTH, rand);
+  const y2health = pick(YEAR_HEALTH, rand);
+  const y3health = pick(YEAR_HEALTH, rand);
+  const y1advice = pick(YEAR_ADVICE, rand);
+  const y2advice = pick(YEAR_ADVICE, rand);
+  const y3advice = pick(YEAR_ADVICE, rand);
+  const y1overall = pick(YEAR_TYPES, rand);
+  const y2overall = pick(YEAR_TYPES, rand);
+  const y3overall = pick(YEAR_TYPES, rand);
+
+  // 卷首
+  const poem = pick(OPENING_POEMS, rand);
+  const overviewTmpl = pick(OVERVIEW_TEMPLATES, rand);
+  const overview = overviewTmpl
+    .replace(/\$\{name\}/g, name)
+    .replace(/\$\{gender\}/g, gender === '乾造' ? '乾造（男命）' : '坤造（女命）')
+    .replace(/\$\{zodiac\}/g, zodiac)
+    .replace(/\$\{zodiacWxing\}/g, zodiacWxing)
+    .replace(/\$\{zodiacChar\}/g, zodiacChar);
+
+  // 四柱
+  const baziTmpl = pick(BAZI_PILLAR_TEMPLATES, rand);
+  const baziAnalysis = baziTmpl
+    .replace(/\$\{yearGan\}/g, yearGan)
+    .replace(/\$\{yearZhi\}/g, yearZhi)
+    .replace(/\$\{monthGan\}/g, monthGan)
+    .replace(/\$\{monthZhi\}/g, monthZhi)
+    .replace(/\$\{dayGan\}/g, dayGan)
+    .replace(/\$\{dayZhi\}/g, dayZhi)
+    .replace(/\$\{hourGan\}/g, hourGan)
+    .replace(/\$\{hourZhi\}/g, hourZhi)
+    .replace(/\$\{dayWxing\}/g, dayWxing)
+    .replace(/\$\{season\}/g, season)
+    .replace(/\$\{seasonQi\}/g, seasonQi)
+    .replace(/\$\{wxingDesc\}/g, wxingDesc)
+    .replace(/\$\{mu\}/g, wxingValues['木'])
+    .replace(/\$\{huo\}/g, wxingValues['火'])
+    .replace(/\$\{tu\}/g, wxingValues['土'])
+    .replace(/\$\{jin\}/g, wxingValues['金'])
+    .replace(/\$\{shui\}/g, wxingValues['水'])
+    .replace(/\$\{yearWxing\}/g, yearWxing)
+    .replace(/\$\{zhiWxing\}/g, zhiWxing)
+    .replace(/\$\{zhiHide\}/g, zhiHide)
+    .replace(/\$\{monthWxing\}/g, monthWxing);
+
+  const strengthTmpl = pick(STRENGTH_ANALYSIS, rand);
+  const strengthAnalysis = strengthTmpl
+    .replace(/\$\{strongWxing\}/g, strongWxing)
+    .replace(/\$\{weakWxing\}/g, weakWxing)
+    .replace(/\$\{xiGod\}/g, xiGod)
+    .replace(/\$\{jiGod\}/g, jiGod);
+
+  const charTmpl = pick(CHARACTER_ANALYSIS, rand);
+  const charAnalysis = charTmpl
+    .replace(/\$\{name\}/g, name)
+    .replace(/\$\{outward\}/g, outward)
+    .replace(/\$\{inward\}/g, inward)
+    .replace(/\$\{dayGan\}/g, dayGan)
+    .replace(/\$\{dayZhi\}/g, dayZhi)
+    .replace(/\$\{seatDesc\}/g, seatDesc)
+    .replace(/\$\{zodiac\}/g, zodiac)
+    .replace(/\$\{zodiacChar\}/g, zodiacChar)
+    .replace(/\$\{temperSummary\}/g, temperSummary)
+    .replace(/\$\{talent\}/g, talent)
+    .replace(/\$\{weakness\}/g, weakness);
+
+  // 紫微
+  const caiboTmpl = pick(CAIBO_PALACE, rand);
+  const caiboAnalysis = caiboTmpl
+    .replace(/\$\{star\}/g, mainStar)
+    .replace(/\$\{meaning\}/g, starMeaning)
+    .replace(/\$\{zhengCai\}/g, zhengCai)
+    .replace(/\$\{pianCai\}/g, pianCai)
+    .replace(/\$\{caiMethod\}/g, caiMethod)
+    .replace(/\$\{caiTaboo\}/g, caiTaboo)
+    .replace(/\$\{caiSource\}/g, caiSource)
+    .replace(/\$\{caiAge\}/g, caiAge);
+
+  const guanluTmpl = pick(GUANLU_PALACE, rand);
+  const guanluAnalysis = guanluTmpl
+    .replace(/\$\{star\}/g, star2)
+    .replace(/\$\{meaning\}/g, meaning2)
+    .replace(/\$\{careerDir\}/g, careerDir)
+    .replace(/\$\{careerAge\}/g, careerAge)
+    .replace(/\$\{careerEvent\}/g, careerEvent)
+    .replace(/\$\{careerAdvice\}/g, careerAdvice)
+    .replace(/\$\{careerTaboo\}/g, careerTaboo);
+
+  const qianyiTmpl = pick(QIANYI_PALACE, rand);
+  const qianyiAnalysis = qianyiTmpl
+    .replace(/\$\{star\}/g, star3)
+    .replace(/\$\{meaning\}/g, meaning3)
+    .replace(/\$\{migrationLuck\}/g, migrationLuck)
+    .replace(/\$\{migrationDir\}/g, migrationDir);
+
+  // 奇门
+  const qimenTmpl = pick(QIMEN_ANALYSIS, rand);
+  const qimenAnalysis = qimenTmpl
+    .replace(/\$\{star\}/g, qimenStar)
+    .replace(/\$\{starM\}/g, starM)
+    .replace(/\$\{gate\}/g, qimenGate)
+    .replace(/\$\{gateM\}/g, gateM)
+    .replace(/\$\{god\}/g, qimenGod)
+    .replace(/\$\{godM\}/g, godM)
+    .replace(/\$\{overallQi\}/g, overallQiFinal);
+
+  // 流年
+  const yearTmpl = pick(YEAR_PREDICTIONS, rand);
+  const yearAnalysis = yearTmpl
+    .replace(/\$\{y1\}/g, y1)
+    .replace(/\$\{y2\}/g, y2)
+    .replace(/\$\{y3\}/g, y3)
+    .replace(/\$\{y1career\}/g, y1career)
+    .replace(/\$\{y2career\}/g, y2career)
+    .replace(/\$\{y3career\}/g, y3career)
+    .replace(/\$\{y1love\}/g, y1love)
+    .replace(/\$\{y2love\}/g, y2love)
+    .replace(/\$\{y3love\}/g, y3love)
+    .replace(/\$\{y1health\}/g, y1health)
+    .replace(/\$\{y2health\}/g, y2health)
+    .replace(/\$\{y3health\}/g, y3health)
+    .replace(/\$\{y1advice\}/g, y1advice)
+    .replace(/\$\{y2advice\}/g, y2advice)
+    .replace(/\$\{y3advice\}/g, y3advice)
+    .replace(/\$\{y1overall\}/g, y1overall)
+    .replace(/\$\{y2overall\}/g, y2overall)
+    .replace(/\$\{y3overall\}/g, y3overall);
+
+  // 寄语
+  const finalWordTmpl = pick(FINAL_WORDS, rand);
+  const finalWord = finalWordTmpl.replace(/\$\{name\}/g, name);
+
+  // 拼装完整报告
+  const report = {
+    poem: poem,
+    overview: overview,
+    bazi: baziAnalysis + '\n\n' + strengthAnalysis + '\n\n' + charAnalysis,
+    ziwei: '【命宫】命宫主星为' + mainStar + '。' + starMeaning + '。\n\n【财帛宫】' + caiboAnalysis + '\n\n【官禄宫】' + guanluAnalysis + '\n\n【迁移宫】' + qianyiAnalysis,
+    qimen: qimenAnalysis,
+    year: yearAnalysis,
+    final: finalWord
+  };
+
+  return report;
+}
+
+function getWxing(gan) {
+  const map = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水'};
+  return map[gan] || '土';
+}
+
+function getZhiWxing(zhi) {
+  const map = {'子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
+  return map[zhi] || '土';
+}
+
+// ====== 渲染函数 ======
+
+function renderReport(report) {
+  const container = document.getElementById('resultContent');
+  container.innerHTML = '';
+
+  // 卷首
+  const section0 = document.createElement('div');
+  section0.className = 'result-section fade-in';
+  section0.innerHTML = `
+    <h3>· 卷首语 ·</h3>
+    <div class="text-center italic text-[#d4af37] text-opacity-80 mb-4 leading-relaxed">${report.poem}</div>
+    <p class="text-[#d4c5a0] leading-relaxed text-sm" style="text-indent: 2em;">${report.overview}</p>
+  `;
+  container.appendChild(section0);
+
+  // 四柱八字
+  const section1 = document.createElement('div');
+  section1.className = 'result-section fade-in';
+  section1.style.animationDelay = '0.1s';
+  const baziHtml = report.bazi.split('\n\n').map(p => `<p class="text-[#d4c5a0] leading-relaxed text-sm mb-3" style="text-indent: 2em;">${p}</p>`).join('');
+  section1.innerHTML = `
+    <h3>· 四柱八字与五行解析 ·</h3>
+    ${baziHtml}
+  `;
+  container.appendChild(section1);
+
+  // 紫微斗数
+  const section2 = document.createElement('div');
+  section2.className = 'result-section fade-in';
+  section2.style.animationDelay = '0.2s';
+  const ziweiHtml = report.ziwei.split('\n\n').map(p => `<p class="text-[#d4c5a0] leading-relaxed text-sm mb-3" style="text-indent: 2em;">${p.replace('【命宫】','').replace('【财帛宫】','').replace('【官禄宫】','').replace('【迁移宫】','')}</p>`).join('');
+  const ziweiLabels = report.ziwei.match(/【([^】]+)】/g) || [];
+  const ziweiContents = report.ziwei.split(/【[^】]+】/).filter(s => s.trim());
+  let ziweiFinal = '';
+  const labelMap = {'命宫':'命宫推演','财帛宫':'财帛宫解析','官禄宫':'官禄宫格局','迁移宫':'迁移宫展望'};
+  ziweiLabels.forEach((l, i) => {
+    const key = l.replace(/[【】]/g, '');
+    const label = labelMap[key] || key;
+    ziweiFinal += `<p class="text-[#d4af37] text-sm font-bold mb-1 mt-3">【${label}】</p>`;
+    if (ziweiContents[i]) {
+      ziweiFinal += `<p class="text-[#d4c5a0] leading-relaxed text-sm mb-2" style="text-indent: 2em;">${ziweiContents[i].trim()}</p>`;
+    }
+  });
+  section2.innerHTML = `
+    <h3>· 紫微斗数命宫推演 ·</h3>
+    ${ziweiFinal}
+  `;
+  container.appendChild(section2);
+
+  // 奇门遁甲
+  const section3 = document.createElement('div');
+  section3.className = 'result-section fade-in';
+  section3.style.animationDelay = '0.3s';
+  section3.innerHTML = `
+    <h3>· 奇门遁甲现状与吉凶 ·</h3>
+    <p class="text-[#d4c5a0] leading-relaxed text-sm" style="text-indent: 2em;">${report.qimen}</p>
+  `;
+  container.appendChild(section3);
+
+  // 流年大运
+  const section4 = document.createElement('div');
+  section4.className = 'result-section fade-in';
+  section4.style.animationDelay = '0.4s';
+  const yearHtml = report.year.split('\n').map(p => {
+    if (p.trim().startsWith('未来') || p.trim().startsWith('流年') || p.trim().startsWith('大后')) {
+      return `<p class="text-[#d4af37] text-sm font-bold mb-2">${p}</p>`;
+    }
+    if (p.includes('年：') || p.includes('年）')) {
+      return `<p class="text-[#d4c5a0] leading-relaxed text-sm mb-2" style="text-indent: 2em;">${p}</p>`;
+    }
+    return p.trim() ? `<p class="text-[#d4c5a0] leading-relaxed text-sm mb-2" style="text-indent: 2em;">${p}</p>` : '';
+  }).join('');
+  section4.innerHTML = `
+    <h3>· 流年大运 ·</h3>
+    ${yearHtml}
+  `;
+  container.appendChild(section4);
+
+  // 寄语
+  const section5 = document.createElement('div');
+  section5.className = 'result-section fade-in';
+  section5.style.animationDelay = '0.5s';
+  section5.innerHTML = `
+    <h3>· 大师寄语 ·</h3>
+    <p class="text-[#d4c5a0] leading-relaxed text-sm italic" style="text-indent: 2em;">${report.final}</p>
+  `;
+  container.appendChild(section5);
+
+  // 滚动到结果区域
+  document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ====== 交互控制 ======
+
+const LOADING_TEXTS = [
+  '正在排盘...',
+  '正在推演八字生克...',
+  '正在排布紫微星曜...',
+  '正在起奇门局...',
+  '正在推演流年大运...',
+  '天机即将揭晓...'
+];
+
+let loadingTimer = null;
+let loadingTextTimer = null;
+let loadingIdx = 0;
+
+function startLoading() {
+  const screen = document.getElementById('loadingScreen');
+  const textEl = document.getElementById('loadingText');
+  screen.classList.add('active');
+
+  loadingIdx = 0;
+  textEl.textContent = LOADING_TEXTS[0];
+
+  loadingTextTimer = setInterval(() => {
+    loadingIdx = (loadingIdx + 1) % LOADING_TEXTS.length;
+    textEl.textContent = LOADING_TEXTS[loadingIdx];
+  }, 500);
+
+  return new Promise((resolve) => {
+    loadingTimer = setTimeout(() => {
+      clearInterval(loadingTextTimer);
+      screen.classList.remove('active');
+      resolve();
+    }, 3200);
+  });
+}
+
+function closeToast() {
+  document.getElementById('toastModal').classList.remove('active');
+  document.getElementById('toastOverlay').classList.remove('active');
+}
+
+function showToast(message) {
+  document.getElementById('toastMessage').textContent = message;
+  document.getElementById('toastModal').classList.add('active');
+  document.getElementById('toastOverlay').classList.add('active');
+}
+
+function resetForm() {
+  document.getElementById('resultSection').classList.add('hidden');
+  document.getElementById('inputSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // 清空表单
+  document.getElementById('userName').value = '';
+  const radios = document.querySelectorAll('input[name="gender"]');
+  radios.forEach(r => r.checked = false);
+  document.getElementById('birthDate').value = '1990-01-01T12:00';
+}
+
+// ====== 主流程 ======
+
+document.getElementById('divineBtn').addEventListener('click', async function() {
+  const name = document.getElementById('userName').value.trim();
+  const genderEl = document.querySelector('input[name="gender"]:checked');
+  const birthDate = document.getElementById('birthDate').value;
+
+  // 校验
+  if (!name) {
+    showToast('请先录入尊姓大名，方可观天机之象。');
+    return;
+  }
+  if (!genderEl) {
+    showToast('乾坤未定，请先确认性别命格。');
+    return;
+  }
+  if (!birthDate) {
+    showToast('生辰未录，天机难测。请填入出生年月日时。');
+    return;
+  }
+
+  const gender = genderEl.value;
+
+  // 开始加载动画
+  this.disabled = true;
+  this.textContent = '· 天机推演中 ·';
+
+  await startLoading();
+
+  // 执行推演
+  const report = performDivination(name, gender, birthDate);
+
+  // 渲染结果
+  renderReport(report);
+
+  // 显示结果区
+  document.getElementById('resultSection').classList.remove('hidden');
+
+  // 自动滚动到结果区域（延迟确保渲染完成）
+  setTimeout(function() {
+    document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+
+  // 恢复按钮
+  this.disabled = false;
+  this.innerHTML = '<span>☰</span><span>开 启 命 盘</span><span>☷</span>';
+});
+
+// 按回车提交
+document.getElementById('divinationForm').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    document.getElementById('divineBtn').click();
+  }
+});
+
+console.log('勃林大师 · 综合术数引擎已加载');
+console.log('玄门正宗 · 心诚则灵');
+</script>
+</body>
+</html>
